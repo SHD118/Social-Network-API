@@ -8,7 +8,7 @@ module.exports = {
         .populate({ path: 'friends', select: '-__v'})
         .select('-__v')
         .then(userDataDB => res.json(userDataDB))
-        .catch(err => res.status(500).json(err))
+        .catch(err => res.status(500).json({err : err.message}))
     },
         
         getSingleUser({ params }, res) {
@@ -17,21 +17,21 @@ module.exports = {
             .populate({ path: 'thoughts', select: '-__v', populate: { path: 'reactions'}})
             .select('-__v')
             .then(userDataDB =>  userDataDB ? res.json(userDataDB) : res.status(404).json({ message: user404Message(params.id) }))
-            .catch(err => res.status(404).json(err))
+            .catch(err => res.status(404).json({err : err.message}))
         },
 
            // add a new user 
     createUser({ body }, res) {
         User.create({ username: body.username, email: body.email})
         .then(userDataDB => res.json(userDataDB))
-        .catch(err => res.status(400).json(err))
+        .catch(err => res.status(400).json({err : err.message}))
     },
 
     // update user info 
     updateUser({ params, body }, res) {
         User.findOneAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
         .then(userDataDB =>  userDataDB ? res.json(userDataDB) : res.status(404).json({ message: user404Message(params.id) }))
-        .catch(err => res.status(400).json(err))
+            .catch(err => res.status(400).json({err : err.message} ))
     },
 
     // delete user 
@@ -43,21 +43,21 @@ module.exports = {
             }
             Thought.deleteMany({ username: userDataDB.username}).then(deletedData => deletedData ? res.json({ message: user204Message(params.id)}) : res.status(404).json({ message: user404Message(params.id) }))
         })
-        .catch(err => res.status(400).json(err))
+        .catch(err => res.status(400).json({err : err.message}))
     },
 
     // add a friend to user
     addFriend({ params }, res) {
         User.findOneAndUpdate({ _id: params.userId}, { $push: { friends: params.friendId } }, { new: true, runValidators: true })
         .then(userDataDB => res.json(userDataDB))
-        .catch(err => res.status(400).json(err))
+        .catch(err => res.status(400).json({err : err.message}))
     },
 
     // remove a friend from user 
     removeFriend({ params }, res) {
         User.findOneAndUpdate({ _id: params.userId}, { $pull: { friends: params.friendId} })
         .then(userDataDB => res.status(200).json(user204Message(params.friendId, 'User')))
-        .catch(err => res.json(err))
+        .catch(err => res.json({err : err.message}))
     }
 
 };

@@ -19,7 +19,7 @@ const userSchema = new Schema(
     thoughts: [{
       type: String
     }],
-    // assignments: [assignmentSchema],
+
   
         friends: [{
             type: Schema.Types.ObjectId,
