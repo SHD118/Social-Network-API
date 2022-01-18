@@ -11,7 +11,7 @@ module.exports = {
         .catch(err => res.status(500).json(err))
     },
         
-        getUserById({ params }, res) {
+        getSingleUser({ params }, res) {
             User.findOne({ _id: params.id })
             .populate({ path: 'friends', select: '-__v' })
             .populate({ path: 'thoughts', select: '-__v', populate: { path: 'reactions'}})
