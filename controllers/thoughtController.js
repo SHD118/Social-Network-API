@@ -15,15 +15,16 @@ module.exports = {
 
     // get one thought by ID
     getThoughtById({ params }, res) {
-        Thought.findOne({ _id: params.id })
+        Thought.findOne({ _id: params.thoughtId })
             .populate({ path: 'reactions', select: '-__v' })
             .select('-__v')
-            .then(thoughtDataDB => thoughtDataDB ? res.json(thoughtDataDB) : res.status(404).json({ message: thought404Message(params.id) }))
+            .then(thoughtDataDB => thoughtDataDB ? res.json(thoughtDataDB) : res.status(404).json({ message: thought404Message(params.thoughtId) }))
             .catch(err => res.status(404).json({err : err.message}))
     },
 
     // add a thought
     createThought({ body }, res) {
+       console.log(body)
         Thought.create({ thoughtText: body.thoughtText, username: body.username })
             .then(({ _id }) => User.findOneAndUpdate({ _id: body.userId }, { $push: { thoughts: _id } }, { new: true }))
             .then(thoughtDataDB => res.json(thoughtDataDB))
@@ -32,23 +33,24 @@ module.exports = {
 
     // update thought
     updateThought({ params, body }, res) {
-        Thought.findOneAndUpdate({ _id: params.id }, body, { new: true, runValidators: true })
-            .then(thoughtDataDB => thoughtDataDB ? res.json(thoughtDataDB) : res.status(404).json({ message: thought404Message(params.id) }))
+        Thought.findOneAndUpdate({ _id: params.thoughtId }, body, { new: true, runValidators: true })
+            .then(thoughtDataDB => thoughtDataDB ? res.json(thoughtDataDB) : res.status(404).json({ message: thought404Message(params.thoughtId) }))
             .catch(err => res.status(400).json({err : err.message}))
     },
 
     // delete thought 
     deleteThought({ params }, res) {
-        Thought.findOneAndDelete({ _id: params.id })
-            .then(thoughtDataDB => thoughtDataDB ? res.json(thought200Message(thoughtDataDB._id)) : res.status(404).json({ message: thought404Message(params.id) }))
+        Thought.findOneAndDelete({ _id: params.thoughtId })
+            .then(thoughtDataDB => thoughtDataDB ? res.json(thought200Message(thoughtDataDB._id)) : res.status(404).json({ message: thought404Message(params.thoughtId) }))
             .catch(err => res.status(404).json({err : err.message}))
     },
 
     // add a reaction to thought
     createReaction({ params, body }, res) {
+        console.log(body)
         Thought.findOneAndUpdate(
             { _id: params.thoughtId },
-            { $push: { reactions: { reactionBody: body.reactionBody, username: body.username } } },
+            { $push: { reaction:  body  } },
             { new: true, runValidators: true })
             .then(thoughtDataDB => thoughtDataDB ? res.json(thoughtDataDB) : res.status(404).json({ message: thought404Message(params.id) }))
             .catch(err => res.status(400).json({err : err.message}))

@@ -31,7 +31,8 @@ router
   // api/thoughts/:thoughtId/reactions
 router
 .route('/:thoughtId/reactions')
-.post(createReaction);
+  .post(createReaction);
+console.log(createThought)
 
 router
 .route('/:thoughtId/reactions/:reactionId')

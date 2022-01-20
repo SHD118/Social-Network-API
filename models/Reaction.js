@@ -11,7 +11,7 @@ const reactionSchema = new Schema(
           
     },
     reactionBody: {
-      type: Boolean,
+      type: String,
         required: true,
       max_length: 280
     },
@@ -38,6 +38,5 @@ const reactionSchema = new Schema(
   }
 );
 
-// const Course = model('course', courseSchema);
 
 module.exports = reactionSchema;

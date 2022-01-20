@@ -18,10 +18,7 @@ const thoughtSchema = new Schema(
             default: Date.now(),
 
         },
-        thoughts: [{
-            type: String
-        }],
-        // assignments: [assignmentSchema],
+
         username: {
             type: String,
             required: true,
@@ -40,7 +37,7 @@ const thoughtSchema = new Schema(
 );
 thoughtSchema.virtual("reactionCount").get(function () {
     return this.reactions.length 
-    // this doenst work well with fat arrow
+
 })
 const Thought = model('Thought', thoughtSchema);
 
