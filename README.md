@@ -124,4 +124,5 @@ https://www.awesomescreenshot.com/video/6969901?key=ca77537881e3c33080164e393e2e
 * https://github.com/SHD118/Employee-Tracker
 
 ## Resources
-
+https://www.npmjs.com/package/mongoose
+https://www.tutorialspoint.com/mongodb/index.htm
