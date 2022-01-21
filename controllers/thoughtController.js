@@ -26,7 +26,8 @@ module.exports = {
     createThought({ body }, res) {
        console.log(body)
         Thought.create({ thoughtText: body.thoughtText, username: body.username })
-            .then(({ _id }) => User.findOneAndUpdate({ _id: body.userId }, { $push: { thoughts: _id } }, { new: true }))
+            .then(({ _id }) => User.findOneAndUpdate({ _id: body.userId },
+                { $push: { thoughts: _id } }, { new: true }))
             .then(thoughtDataDB => res.json(thoughtDataDB))
             .catch(err => res.status(400).json({err : err.message}))
     },
@@ -57,16 +58,28 @@ module.exports = {
         console.log(body)
         Thought.findOneAndUpdate(
             { _id: params.thoughtId },
-            { $push: { reaction:  body  } },
+            { $push: { reactions:  body  } },
             { new: true, runValidators: true })
-            .then(thoughtDataDB => thoughtDataDB ? res.json(thoughtDataDB) : res.status(404).json({ message: thought404Message(params.id) }))
-            .catch(err => res.status(400).json({err : err.message}))
+            .populate( "reactions" )
+            .select("-__v")
+            .then((thoughtDataDB) =>
+              !thoughtDataDB
+                ? res
+                    .status(404)
+                    .json({ message: "No thought found with this ID" })
+                : res.json(thoughtDataDB)
+            )
+            .catch((err) => res.status(500).json(err));
     },
 
     // remove a reaction from thought
     removeReaction({ params }, res) {
-        Thought.findOneAndUpdate({ _id: params.thoughtId }, { $pull: { reactions: { _id: params.reactionId } } }, { new: true })
-            .then(thoughtDataDB => thoughtDataDB ? res.json(reaction200Message(params.thoughtId)) : res.status(404).json({ message: thought404Message(params.id) }))
+        Thought.findOneAndUpdate({ _id: params.thoughtId },
+            { $pull: { reactions: { _id: params.reactionId } } },
+             { new: true })
+            .then(thoughtDataDB => !thoughtDataDB
+                ? res.json(reaction200Message(params.thoughtId))
+                : res.json(thoughtDataDB))
             .catch(err => res.status(404).json({err : err.message}))
     }
 };
