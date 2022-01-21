@@ -16,10 +16,7 @@ router
 .get(getAllThoughts)
 .post(createThought);
 
-// /api/thoughts/:userId
-// router
-// .route('/:userId')
-// .post(createThought);
+
 
 // /api/thoughts/:thoughtId
 router

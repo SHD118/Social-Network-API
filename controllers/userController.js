@@ -12,13 +12,10 @@ module.exports = {
     },
         
     getSingleUser({ params }, res) {
-            // console.log("hello" + params.userId )
         User.findOne({ _id: params.userId })
             .populate('friends')
             .populate('thoughts')
             .select("-__v")
-            // .populate({ path: 'thoughts', select: '-__v', populate: { path: 'reactions'}})
-            // .select('-__v')
             .then(userDataDB =>  userDataDB ? res.json(userDataDB) : res.status(404).json({ message: user404Message(params.userId) }))
             .catch(err => res.status(500).json({err : err.message}))
         },
@@ -54,10 +51,7 @@ module.exports = {
             }
             res.json(userDataDB)
 
-            // Thought.deleteMany({ username: userDataDB.username })
-            //     .then(deletedData => deletedData
-            //         ? res.json({ message: user204Message(params.userId) })
-            //         : res.status(404).json({ message: user404Message(params.userId) }))
+        
         })
         .catch(err => res.status(400).json({err : err.message}))
     },
