@@ -48,11 +48,16 @@ module.exports = {
         User.findOneAndDelete({ _id: params.userId })
         .then(userDataDB => {
             if (!userDataDB) {
-                console.log("ee")
+
                 return res.status(404).json({ message: user404Message(params.userId) })
                 
             }
-            Thought.deleteMany({ username: userDataDB.username}).then(deletedData => deletedData ? res.json({ message: user204Message(params.userId)}) : res.status(404).json({ message: user404Message(params.userId) }))
+            res.json(userDataDB)
+
+            // Thought.deleteMany({ username: userDataDB.username })
+            //     .then(deletedData => deletedData
+            //         ? res.json({ message: user204Message(params.userId) })
+            //         : res.status(404).json({ message: user404Message(params.userId) }))
         })
         .catch(err => res.status(400).json({err : err.message}))
     },
@@ -69,7 +74,7 @@ module.exports = {
         User.findOneAndUpdate(
         { _id: params.userId },
         { $pull: { friends: params.friendId } })
-        .then(userDataDB => res.status(200).json(user204Message(params.friendId, 'User')))
+        .then(userDataDB => res. status(200).json(userDataDB).json(user204Message(params.friendId, 'User')))
         .catch(err => res.json({err : err.message}))
     }
 

@@ -41,8 +41,16 @@ module.exports = {
     // delete thought 
     deleteThought({ params }, res) {
         Thought.findOneAndDelete({ _id: params.thoughtId })
-            .then(thoughtDataDB => thoughtDataDB ? res.json(thought200Message(thoughtDataDB._id)) : res.status(404).json({ message: thought404Message(params.thoughtId) }))
-            .catch(err => res.status(404).json({err : err.message}))
+            // .then(thoughtDataDB => thoughtDataDB ? res.json(thought200Message(thoughtDataDB._id)) : res.status(404).json({ message: thought404Message(params.thoughtId) }))
+            // .catch(err => res.status(404).json({err : err.message}))
+            .then(thoughtDataDB => {
+                if (!thoughtDataDB) {
+    
+                    return res.status(404).json({ message: user404Message(params.thoughtId) })
+                    
+                }
+                res.json(thoughtDataDB)
+            })
     },
 
     // add a reaction to thought
